@@ -1,1 +1,0 @@
-g++ -o "/home/pi/projects/modultest_player_std/bin/ARM/Debug/modultest_player_std.out" -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -lwiringPi -lpthread -lasound /home/pi/projects/modultest_player_std/obj/ARM/Debug/modt_1.o

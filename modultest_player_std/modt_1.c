@@ -12,29 +12,46 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <signal.h>
+#include <mcp3004.h>
 #include "flanken.h"
 #include "popen.h"
 #include "volumen.h"
 #include "handling.h"
+#include "delay.h"
 
 //Pinbelegung der Tasten
 #define PLAY 17
 #define VOR 27
 #define RUECK 22
+#define MODSELECT 14
+
 //globale Variablen
-pthread_t t_play,t_stop, t_control; //pthread-Bezeichner aller auszuführenden Threads
+pthread_t t_play,t_stop, t_control, t_monitor; //pthread-Bezeichner aller auszuführenden Threads
 int song_index = 0; //Index der Playliste
 int play = 0; // Variable, ob die Playtaste gedrückt wird, also ob die Musik gespielt wurde
 int firstrun = 0; // Variable, ob es sich um den frischen Start handelt
 char *path = "//home//pi//music//"; //vorgegebener Pfad zur Speicherung der Musikdateien
+char *usbpath = "//media//usb0//"; //Default-Mounting-Point des USB-Speichergerätes
 int infp, outfp; // Bezeichner für die Stdin und Stdout des durch Pipe gestarteten Prozesses
 char cmd[255]; // Die an stdin zu sendenden Befehle
 char *playlist[32768] = { 0 }; // Char-Array zur Speicherung der Playliste, maximal 32768 Elemente erlaubt, maximaler Index bis 32767
+char *output[255]; //Stdout des MPG321-Players
+int usb_was_plugged = 0; //Speichere, ob ein USB-Stick eingesteckt wurde. 
+
 
 //Funktionsprototypen 
 int flank_high(int pin);
 void cleanup();
 void siginthandler(int sig_num); // Signalhandler beim Beenden, mpg321 zu beenden
+int size_playlist();
+int read_dir(char *input_path);
+void generate_command();
+void *play_music();
+void *stop_music();
+void *control();
+int determine_usb();
+void *monitoring_player();
+
 
 
 int size_playlist() { // Mit dieser Funktion wird die eigentliche Länge der Playliste bestimmt. Bei Erstellen der Array-Liste werden alle Elemente mit 0 gefüllt.
@@ -47,11 +64,11 @@ int size_playlist() { // Mit dieser Funktion wird die eigentliche Länge der Play
 	return length;
 }
 
-int read_dir() { // Verzeichnis wird gelesen
+int read_dir(char *input_path) { // Verzeichnis wird gelesen
 
 	DIR *d;
 	struct dirent *dir;
-	d = opendir(path); // Verzeichnis wird gelesen
+	d = opendir(input_path); // Verzeichnis wird gelesen
 	int ind = 0;
 	
 	if (d)
@@ -65,14 +82,14 @@ int read_dir() { // Verzeichnis wird gelesen
 
 		}
 		closedir(d); 
-		return(0);
+		return 0;
 	}
 	else {
 		return 1; // Sollte das Verzeichnis nicht so zugegriffen werden, danach wird ein Fehlercode ausgegeben.
 	}
 
 	if (playlist[0] == 0) { // Sollte das Verzeichnis leer sein, wird ein Fehlercode ausgegeben.
-		return 1;
+		return 2;
 	}
 	
 }
@@ -113,7 +130,7 @@ void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingänge
 		if (flank_high(PLAY) == HIGH) { // Bei Betätigung der Play-Taste wird der Zustand zum Spielen bzw. Pausieren gewechselt.
 			if (play == 0) {
 				play++;
-				delay(500);
+				delay_no_itr(500);
 			}
 			else {
 				play--;
@@ -123,7 +140,7 @@ void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingänge
 		if (flank_high(VOR) == HIGH && firstrun != 0) { //Bei Betätigung der VOR-Taste wird der Index der Playliste um 1 inkrementiert, wenn das Ende nicht erreicht wurde.
 			if (song_index < size_playlist()-1) {
 				song_index++;
-				delay(500);
+				delay_no_itr(500);
 			}
 			generate_command();
 			write(infp, cmd, 128);
@@ -133,19 +150,61 @@ void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingänge
 		if (flank_high(RUECK) == HIGH && firstrun != 0) { //Ebenso für die RÜCK-Taste
 			if (song_index > 0) {
 				song_index--; 
-				delay(500);
+				delay_no_itr(500);
 			}
 			generate_command();
 			write(infp, cmd, 128);
 
 
 		}
-		//set_volume(25);
+
+		if (digitalRead(MODSELECT) == HIGH) { //Wechsel auf USB-Stick
+			usb_was_plugged = 1;
+			determine_usb();
+			generate_command();
+			write(infp, cmd, 128);
+			delay_no_itr(500);
+
+		}
+		else {
+			if (usb_was_plugged = 1) {//Wenn der USB-Speicher entfernt wird, wird der lokale Speicherort wieder gesucht, um eine neue Playliste zu erstellen.
+				usb_was_plugged = 0;
+				if (read_dir(path) != 0) {
+					printf("Empty Directory!\n");
+					exit(EXIT_FAILURE);
+					//break;
+				}
+			}
+			
+		}
+		//set_volume(25); Hier die Funktion für die Volumenregelung
 		
 	}
 	return 0;
 }
 
+void *monitoring_player() {
+	while (1) {
+		if (read(outfp, output, 128) == 0) {
+			if (strcmp(output, "@P 3") == 1) { //Wenn die Wiedergabe mit dem aktuellen Lied beendet ist, wird es zum nächsten Lied gesprungen.
+				song_index++;
+				generate_command();
+				write(infp, cmd, 128);
+			}
+		}
+	}
+
+}
+
+int determine_usb() { //Erstimpelementation der Einlesefunktion des USB-Speichers
+	if (read_dir(usbpath) == 0) { //Lesen des USB-Mouting-Points und Erstellen einer neuer Playliste
+		//strcpy(path, usbpath);
+		return 0;
+	}
+	else {
+		return 1;
+	}
+}
 
 
 int main() {
@@ -164,54 +223,50 @@ int main() {
 	pullUpDnControl(VOR, PUD_UP);
 	pullUpDnControl(RUECK, PUD_UP);
 
-	if (read_dir() == 0) {
-		printf("Starting playback funtion\n");
-
-		if (popen2("mpg321 -R 123", &infp, &outfp) == 0) {
-			printf("Starting mpg321 player failed, exiting...\n");
-			return 1;
-		}
-
-
-		if (pthread_create(&t_play, NULL, play_music, NULL) != 0) {
-			printf("Creating playback thread failed, exiting...\n");
-			return 1;
-		}
-		if (pthread_create(&t_control, NULL, control, NULL) != 0) {
-			printf("Creating input control thread failed, exiting...\n");
-			return 1;
-		}
-		if (pthread_create(&t_stop, NULL, stop_music, NULL) != 0) {
-			printf("Creating pausing control thread failed, exiting...\n");
-			return 1;
-		}
-		if (pthread_join(t_stop, NULL) != 0) {
-			printf("Starting pausing thread failed, exiting...\n");
-			return 1;
-		}
-
-		if (pthread_join(t_play, NULL) != 0) {
-			printf("Starting playing thread failed, exiting...\n");
-			return 1;
-		}
-		if (pthread_join(t_control, NULL) != 0) {
-			printf("Starting control thread failed, exiting...\n");
-			return 1;
-		}
-
-		if (close(infp) != 0) {
-			printf("Closing input handler failed, exiting anyway...\n");
-			return 1;
-		}
-		//
-		
-		return 0;
-	
+	while (read_dir(path) != 0 && read_dir(usbpath) != 0) {
+		prinf("Please insert your USB Device or copying some file into the given folder\n");
+		delay_no_intr(1000);
 	}
-	else {
-		printf("File System Error: Unable to read the given directory or the directory is empty\n");
+	//session_start();
+	printf("Starting playback funtion\n");
+
+	if (popen2("mpg321 -R 123", &infp, &outfp) == 0) {
+		printf("Starting mpg321 player failed, exiting...\n");
 		return 1;
 	}
+
+
+	if (pthread_create(&t_play, NULL, play_music, NULL) != 0) {
+		printf("Creating playback thread failed, exiting...\n");
+		return 1;
+	}
+	if (pthread_create(&t_control, NULL, control, NULL) != 0) {
+		printf("Creating input control thread failed, exiting...\n");
+		return 1;
+	}
+	if (pthread_create(&t_stop, NULL, stop_music, NULL) != 0) {
+		printf("Creating pausing control thread failed, exiting...\n");
+		return 1;
+	}
+	if (pthread_join(t_stop, NULL) != 0) {
+		printf("Starting pausing thread failed, exiting...\n");
+		return 1;
+	}
+
+	if (pthread_join(t_play, NULL) != 0) {
+		printf("Starting playing thread failed, exiting...\n");
+		return 1;
+	}
+	if (pthread_join(t_control, NULL) != 0) {
+		printf("Starting control thread failed, exiting...\n");
+		return 1;
+	}
+
+	if (close(infp) != 0) {
+		printf("Closing input handler failed, exiting anyway...\n");
+		return 1;
+	}
+
 
 
 

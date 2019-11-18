@@ -3,7 +3,7 @@
 #include <signal.h>
 
 void cleanup() {
-	puts("Terminating...\n");
+	puts("\nTerminating...\n");
 	system("sudo pkill mpg321");
 }
 
