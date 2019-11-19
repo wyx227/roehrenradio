@@ -1,0 +1,1 @@
+g++ -o "/home/pi/projects/modultest_flanken/bin/ARM/Debug/modultest_flanken.out" -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -lwiringPi /home/pi/projects/modultest_flanken/obj/ARM/Debug/modultest_flanken.o

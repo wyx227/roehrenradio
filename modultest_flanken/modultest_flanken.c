@@ -11,7 +11,7 @@ int main() {
 	}
 	pinMode(PLAY, INPUT);
 	pullUpDnControl(PLAY, PUD_UP);
-	int druck = 0;
+	int druck = 0;l
 	while (1) {
 		int old_level = 0;
 		int new_level;
@@ -22,7 +22,7 @@ int main() {
 			//printf("Play!\n");
 			druck++;
 			printf("Es wurde %d mal gedrueckt.\n", druck);
-			delay(1000);
+			delay(50);
 		}
 		
 		old_level = new_level;
