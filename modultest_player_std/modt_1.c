@@ -16,20 +16,22 @@
 #include "popen.h"
 #include "volumen.h"
 #include "handling.h"
+#include "delay.h"
 
 //Pinbelegung der Tasten
 #define PLAY 17
 #define VOR 27
 #define RUECK 22
 //globale Variablen
-pthread_t t_play,t_stop, t_control; //pthread-Bezeichner aller auszuführenden Threads
+pthread_t t_play,t_stop, t_control, t_monitor; //pthread-Bezeichner aller auszuführenden Threads
 int song_index = 0; //Index der Playliste
 int play = 0; // Variable, ob die Playtaste gedrückt wird, also ob die Musik gespielt wurde
 int firstrun = 0; // Variable, ob es sich um den frischen Start handelt
 char *path = "//home//pi//music//"; //vorgegebener Pfad zur Speicherung der Musikdateien
 int infp, outfp; // Bezeichner für die Stdin und Stdout des durch Pipe gestarteten Prozesses
 char cmd[255]; // Die an stdin zu sendenden Befehle
-char *playlist[32768] = { 0 }; // Char-Array zur Speicherung der Playliste, maximal 32768 Elemente erlaubt, maximaler Index bis 32767
+char output[255]; // Stdout der MPG321
+char playlist[32768] = { 0 }; // Char-Array zur Speicherung der Playliste, maximal 32768 Elemente erlaubt, maximaler Index bis 32767
 
 //Funktionsprototypen 
 int flank_high(int pin);
@@ -82,6 +84,22 @@ void generate_command() { // Der Play-Befehl wird generiert mit dem aktuellen In
 	strcat(cmd, path);
 	strcat(cmd, playlist[song_index]);
 	strcat(cmd, "\n");
+}
+
+void *monitoring() { //Überwacht, ob das Spielen vom aktuellen Lied beendet ist.
+	while (1) {
+		if (read(outfp, output, 128)) {
+			if (strstr(output, "@P 3")) {
+				song_index++;
+				generate_command();
+				write(infp, cmd, 128);
+			}
+		}
+		else {
+			printf("Error reading Stdout, critical error!\n");
+			exit(EXIT_FAILURE);
+		}
+	}
 }
 
 void *play_music() { // Beim Betätigen der Play-Taste und wenn das Programm frisch ausgeführt wird, wird das erste Lied gespielt
@@ -185,6 +203,10 @@ int main() {
 			printf("Creating pausing control thread failed, exiting...\n");
 			return 1;
 		}
+		if (pthread_create(&t_monitor, NULL, monitoring, NULL) != 0) {
+			printf("Creating monitoring thread failed, exiting...\n");
+			return 1;
+		}
 		if (pthread_join(t_stop, NULL) != 0) {
 			printf("Starting pausing thread failed, exiting...\n");
 			return 1;
@@ -198,9 +220,18 @@ int main() {
 			printf("Starting control thread failed, exiting...\n");
 			return 1;
 		}
+		if (pthread_join(t_monitor, NULL) != 0) {
+			printf("Starting monitoring thread failed, exiting...\n");
+			return 1;
+		}
 
 		if (close(infp) != 0) {
 			printf("Closing input handler failed, exiting anyway...\n");
+			return 1;
+		}
+
+		if (close(outfp) != 0) {
+			printf("Closing output handler failed, exiting anyway...\n");
 			return 1;
 		}
 		//

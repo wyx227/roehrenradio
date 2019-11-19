@@ -35,7 +35,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{a9f0ad05-a487-49dd-987c-d86b56afae42}</ProjectGuid>
+    <ProjectGuid>{a34e4443-10d5-48e3-a58c-6731869d442f}</ProjectGuid>
     <Keyword>Linux</Keyword>
     <RootNamespace>modultest_flanken</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
@@ -77,11 +77,7 @@
   <ItemGroup>
     <ClCompile Include="modultest_flanken.c" />
   </ItemGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <Link>
-      <AdditionalOptions>-lwiringPi %(AdditionalOptions)</AdditionalOptions>
-    </Link>
-  </ItemDefinitionGroup>
+  <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>
