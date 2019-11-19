@@ -79,12 +79,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="delay.h" />
+    <ClInclude Include="status_display.h" />
     <ClInclude Include="flanken.h" />
     <ClInclude Include="handling.h" />
     <ClInclude Include="popen.h" />
     <ClInclude Include="volumen.h" />
   </ItemGroup>
-  <ItemDefinitionGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <Link>
+      <AdditionalOptions>-lwiringPi -lasound -lpthread %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

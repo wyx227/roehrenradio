@@ -17,6 +17,7 @@
 #include "volumen.h"
 #include "handling.h"
 #include "delay.h"
+#include "status_display.h"
 
 //Pinbelegung der Tasten
 #define PLAY 17
@@ -31,13 +32,13 @@ char *path = "//home//pi//music//"; //vorgegebener Pfad zur Speicherung der Musi
 int infp, outfp; // Bezeichner für die Stdin und Stdout des durch Pipe gestarteten Prozesses
 char cmd[255]; // Die an stdin zu sendenden Befehle
 char output[255]; // Stdout der MPG321
-char playlist[32768] = { 0 }; // Char-Array zur Speicherung der Playliste, maximal 32768 Elemente erlaubt, maximaler Index bis 32767
+char *playlist[32768] = { 0 }; // Char-Array zur Speicherung der Playliste, maximal 32768 Elemente erlaubt, maximaler Index bis 32767
 
 //Funktionsprototypen 
 int flank_high(int pin);
 void cleanup();
 void siginthandler(int sig_num); // Signalhandler beim Beenden, mpg321 zu beenden
-
+void status_LED(int status_code);
 
 int size_playlist() { // Mit dieser Funktion wird die eigentliche Länge der Playliste bestimmt. Bei Erstellen der Array-Liste werden alle Elemente mit 0 gefüllt.
 	int length = 0;
@@ -70,7 +71,7 @@ int read_dir() { // Verzeichnis wird gelesen
 
 		}
 		closedir(d); 
-		return(0);
+		return 0;
 	}
 	else {
 		return 1; // Sollte das Verzeichnis nicht so zugegriffen werden, danach wird ein Fehlercode ausgegeben.
@@ -95,15 +96,20 @@ void *monitoring() { //Überwacht, ob das Spielen vom aktuellen Lied beendet ist.
 			if (strstr(output, "@P 3")) {
 				song_index++;
 				generate_command();
-				write(infp, cmd, 128);
+				if (write(infp, cmd, 128) == -1) {
+					status_LED(3);
+					exit(EXIT_FAILURE);
+				}
 			}
 			if (strstr(output, "@I ")) {
 				printf("Error reading file, please check your media\n");
+				status_LED(2);
 				exit(EXIT_FAILURE);
 			}
 		}
 		else {
 			printf("Error reading Stdout, critical error!\n");
+			status_LED(3);
 			exit(EXIT_FAILURE);
 		}
 
@@ -116,7 +122,10 @@ void *play_music() { // Beim Betätigen der Play-Taste und wenn das Programm fris
 		if (play == 1 && firstrun == 0) {
 			firstrun = 1;
 			generate_command();
-			write(infp, cmd, 128);
+			if (write(infp, cmd, 128) == -1) {
+				status_LED(3);
+				exit(EXIT_FAILURE);
+			}
 			
 		}
 	}
@@ -127,7 +136,10 @@ void *stop_music(){ // Beim Bestätigen der Play-Taste und wenn bereit eine Musik
 	while (1) {
 		if (play == 0 && firstrun != 0) {
 			
-			write(infp, "PAUSE\n", 128);
+			if (write(infp, "PAUSE\n", 128) == -1) {
+				status_LED(3);
+				exit(EXIT_FAILURE);
+			}
 
 		}
 	}
@@ -153,7 +165,10 @@ void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingänge
 				delay_no_itr(500);
 			}
 			generate_command();
-			write(infp, cmd, 128);
+			if (write(infp, cmd, 128) == -1) {
+				status_LED(3);
+				exit(EXIT_FAILURE);
+			}
 
 
 		}
@@ -163,7 +178,10 @@ void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingänge
 				delay_no_itr(500);
 			}
 			generate_command();
-			write(infp, cmd, 128);
+			if (write(infp, cmd, 128) == 1) {
+				status_LED(3);
+				exit(EXIT_FAILURE);
+			}
 
 
 		}
@@ -178,6 +196,7 @@ void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingänge
 int main() {
 	if (wiringPiSetupSys() == -1) { // Beim Fehler der GPIO-Freigabe wird das Programm direkt beendet.
 		printf("Einrichten WiringPI fehlgeschlagen!\n");
+		status_LED(3);
 		return 1;
 	}
 
@@ -196,60 +215,73 @@ int main() {
 
 		if (popen2("mpg321 -R 123", &infp, &outfp) == 0) {
 			printf("Starting mpg321 player failed, exiting...\n");
+			status_LED(3);
 			return 1;
 		}
-
+		status_LED(1);
 
 		if (pthread_create(&t_play, NULL, play_music, NULL) != 0) {
 			printf("Creating playback thread failed, exiting...\n");
+			status_LED(3);
 			return 1;
 		}
 		if (pthread_create(&t_control, NULL, control, NULL) != 0) {
 			printf("Creating input control thread failed, exiting...\n");
+			status_LED(3);
 			return 1;
 		}
 		if (pthread_create(&t_stop, NULL, stop_music, NULL) != 0) {
 			printf("Creating pausing control thread failed, exiting...\n");
+			status_LED(3);
 			return 1;
 		}
 		if (pthread_create(&t_monitor, NULL, monitoring, NULL) != 0) {
 			printf("Creating monitoring thread failed, exiting...\n");
+			status_LED(3);
 			return 1;
 		}
 		if (pthread_join(t_stop, NULL) != 0) {
 			printf("Starting pausing thread failed, exiting...\n");
+			status_LED(3);
 			return 1;
 		}
 
 		if (pthread_join(t_play, NULL) != 0) {
 			printf("Starting playing thread failed, exiting...\n");
+			status_LED(3);
 			return 1;
 		}
 		if (pthread_join(t_control, NULL) != 0) {
 			printf("Starting control thread failed, exiting...\n");
+			status_LED(3);
 			return 1;
 		}
 		if (pthread_join(t_monitor, NULL) != 0) {
 			printf("Starting monitoring thread failed, exiting...\n");
+			status_LED(3);
 			return 1;
 		}
 
 		if (close(infp) != 0) {
 			printf("Closing input handler failed, exiting anyway...\n");
+			status_LED(3);
 			return 1;
 		}
 
 		if (close(outfp) != 0) {
 			printf("Closing output handler failed, exiting anyway...\n");
+			status_LED(3);
 			return 1;
 		}
 		//
-		
+		status_LED(4);
 		return 0;
+
 	
 	}
 	else {
 		printf("File System Error: Unable to read the given directory or the directory is empty\n");
+		status_LED(2);
 		return 1;
 	}
 
