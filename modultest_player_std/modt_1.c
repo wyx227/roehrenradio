@@ -61,8 +61,11 @@ int read_dir() { // Verzeichnis wird gelesen
 		while ((dir = readdir(d)) != NULL)
 		{
 			if (dir->d_type == 8) { //8 für Dateien, nicht für Ordner
-				playlist[ind] = dir->d_name; // Die Playliste werden mit den Dateinamen gefüllt.
-				ind++;
+				if (strstr(dir->d_name, "mp3")) {
+					playlist[ind] = dir->d_name; // Die Playliste werden mit den Dateinamen (ausschliesslich mp3) gefüllt.
+					ind++;
+				}
+
 			}
 
 		}
@@ -94,11 +97,17 @@ void *monitoring() { //Überwacht, ob das Spielen vom aktuellen Lied beendet ist.
 				generate_command();
 				write(infp, cmd, 128);
 			}
+			if (strstr(output, "@I ")) {
+				printf("Error reading file, please check your media\n");
+				exit(EXIT_FAILURE);
+			}
 		}
 		else {
 			printf("Error reading Stdout, critical error!\n");
 			exit(EXIT_FAILURE);
 		}
+
+		
 	}
 }
 
@@ -131,7 +140,7 @@ void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingänge
 		if (flank_high(PLAY) == HIGH) { // Bei Betätigung der Play-Taste wird der Zustand zum Spielen bzw. Pausieren gewechselt.
 			if (play == 0) {
 				play++;
-				delay(500);
+				delay_no_itr(500);
 			}
 			else {
 				play--;
@@ -141,7 +150,7 @@ void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingänge
 		if (flank_high(VOR) == HIGH && firstrun != 0) { //Bei Betätigung der VOR-Taste wird der Index der Playliste um 1 inkrementiert, wenn das Ende nicht erreicht wurde.
 			if (song_index < size_playlist()-1) {
 				song_index++;
-				delay(500);
+				delay_no_itr(500);
 			}
 			generate_command();
 			write(infp, cmd, 128);
@@ -151,7 +160,7 @@ void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingänge
 		if (flank_high(RUECK) == HIGH && firstrun != 0) { //Ebenso für die RÜCK-Taste
 			if (song_index > 0) {
 				song_index--; 
-				delay(500);
+				delay_no_itr(500);
 			}
 			generate_command();
 			write(infp, cmd, 128);
