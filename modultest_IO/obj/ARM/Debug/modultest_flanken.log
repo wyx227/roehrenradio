@@ -1,0 +1,8 @@
+﻿  Validating sources
+  Copying sources remotely to 'roehrenradio'
+  Validating architecture
+  Starting remote build
+  Compiling sources:
+  modultest_flanken.c
+  Linking objects
+  modultest_flanken.vcxproj -> C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_flanken\bin\ARM\Debug\modultest_flanken.out
