@@ -137,6 +137,10 @@ int main() {
 	pullUpDnControl(RUECK, PUD_UP);
 
 
+	digitalWrite(MUX1, LOW);
+	digitalWrite(MUX2, LOW);
+	digitalWrite(MUX3, HIGH);
+
 	fd = wiringPiI2CSetup(I2C_ADDR);
 
 	lcd_init(); // setup LCD

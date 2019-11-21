@@ -210,6 +210,8 @@ int main() {
 	pullUpDnControl(VOR, PUD_UP);
 	pullUpDnControl(RUECK, PUD_UP);
 
+
+
 	if (read_dir() == 0) {
 		printf("Starting playback funtion\n");
 
