@@ -17,6 +17,8 @@ pthread_t t_schleife;
 int fatal_pressed = 0;
 int datenfehler_pressed = 0;
 int restart_pressed = 0;
+struct lookup_table tabelle_global;
+
 
 void use_lcd(char *L1) {
 	//ClrLcd();
@@ -67,6 +69,7 @@ void error_display(int error_code) {
 void *read_input() {
 	int lauf = 0;
 	char *volumen;
+	tabelle_global = filling();
 	while (1) {
 		printf("-----------Debugprogramm startet-----------------\n");
 		printf("---Das ist der %d.te Durchlauf\n",lauf);

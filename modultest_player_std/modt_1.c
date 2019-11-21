@@ -149,7 +149,7 @@ void *stop_music(){ // Beim Bestätigen der Play-Taste und wenn bereit eine Musik
 
 void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingängen
 	while (1) {
-		if (flank_high(PLAY) == HIGH) { // Bei Betätigung der Play-Taste wird der Zustand zum Spielen bzw. Pausieren gewechselt.
+		if ((flank_high(PLAY) == HIGH) && !(flank_high(VOR)) && !(flank_high(RUECK))) { // Bei Betätigung der Play-Taste wird der Zustand zum Spielen bzw. Pausieren gewechselt.
 			if (play == 0) {
 				play++;
 				delay_no_itr(500);
@@ -159,7 +159,7 @@ void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingänge
 			}
 			
 		}
-		if (flank_high(VOR) == HIGH && firstrun != 0) { //Bei Betätigung der VOR-Taste wird der Index der Playliste um 1 inkrementiert, wenn das Ende nicht erreicht wurde.
+		if (flank_high(VOR) == HIGH && firstrun != 0 && !(flank_high(PLAY)) && !(flank_high(RUECK))) { //Bei Betätigung der VOR-Taste wird der Index der Playliste um 1 inkrementiert, wenn das Ende nicht erreicht wurde.
 			if (song_index < size_playlist()-1) {
 				song_index++;
 				delay_no_itr(500);
@@ -172,7 +172,7 @@ void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingänge
 
 
 		}
-		if (flank_high(RUECK) == HIGH && firstrun != 0) { //Ebenso für die RÜCK-Taste
+		if (flank_high(RUECK) == HIGH && firstrun != 0 && !(flank_high(PLAY)) && !(flank_high(VOR))) { //Ebenso für die RÜCK-Taste
 			if (song_index > 0) {
 				song_index--; 
 				delay_no_itr(500);

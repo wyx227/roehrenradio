@@ -2,6 +2,8 @@
 
 #include <math.h>
 
+
+
 struct schaltungsparameter {
 	int R;
 	int poti_max;
@@ -16,6 +18,7 @@ struct lookup_table {
 	int adu_linear[1024];
 	int adu_log[1024];
 };
+
 
 int poti_linear(double winkel, double m) {
 
@@ -67,10 +70,10 @@ struct lookup_table filling() {
 
 
 int linearisieren(int adu_wert) {
-	struct lookup_table tabelle = filling();
+	
 	for (int i = 0; i < 1024; i++) {
-		if (tabelle.adu_log[i] == adu_wert) {
-			return tabelle.adu_linear[i];
+		if (tabelle_global.adu_log[i] == adu_wert) {
+			return tabelle_global.adu_linear[i];
 		}
 	}
 }
