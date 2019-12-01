@@ -15,3 +15,7 @@
 #include "status_display.h"
 
 
+void *monitoring();
+void *play_music();
+void *stop_music();
+void *control();
