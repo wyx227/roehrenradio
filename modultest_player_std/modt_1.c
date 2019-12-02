@@ -26,13 +26,13 @@
 #define MODSELECT 14
 
 //globale Variablen
-pthread_t t_play,t_stop, t_control, t_monitor; //pthread-Bezeichner aller auszuführenden Threads
+pthread_t t_play,t_stop, t_control, t_monitor; //pthread-Bezeichner aller auszufuehrenden Threads
 int song_index = 0; //Index der Playliste
-int play = 0; // Variable, ob die Playtaste gedrückt wird, also ob die Musik gespielt wurde
+int play = 0; // Variable, ob die Playtaste gedrueckt wird, also ob die Musik gespielt wurde
 int firstrun = 0; // Variable, ob es sich um den frischen Start handelt
 char *path = "//home//pi//music//"; //vorgegebener Pfad zur Speicherung der Musikdateien
-char *usbpath = "//media//usb0//"; //Default-Mounting-Point des USB-Speichergerätes
-int infp, outfp; // Bezeichner für die Stdin und Stdout des durch Pipe gestarteten Prozesses
+char *usbpath = "//media//usb0//"; //Default-Mounting-Point des USB-Speichergeraetes
+int infp, outfp; // Bezeichner fuer die Stdin und Stdout des durch Pipe gestarteten Prozesses
 char cmd[255]; // Die an stdin zu sendenden Befehle
 char *playlist[32768] = { 0 }; // Char-Array zur Speicherung der Playliste, maximal 32768 Elemente erlaubt, maximaler Index bis 32767
 char *output[255]; //Stdout des MPG321-Players
@@ -49,15 +49,15 @@ void generate_command();
 void *play_music();
 void *stop_music();
 void *control();
-int determine_usb();
+//int determine_usb();
 void *monitoring_player();
 
 
 
-int size_playlist() { // Mit dieser Funktion wird die eigentliche Länge der Playliste bestimmt. Bei Erstellen der Array-Liste werden alle Elemente mit 0 gefüllt.
+int size_playlist() { // Mit dieser Funktion wird die eigentliche Laenge der Playliste bestimmt. Bei Erstellen der Array-Liste werden alle Elemente mit 0 gefï¿½llt.
 	int length = 0;
 	for (int i = 0; i < 32768; i++) {
-		if (playlist[i] != 0) { // Alle 0 werden nicht gezählt
+		if (playlist[i] != 0) { // Alle 0 werden nicht gezaehlt
 			length++;
 		}
 	}
@@ -75,8 +75,8 @@ int read_dir(char *input_path) { // Verzeichnis wird gelesen
 	{
 		while ((dir = readdir(d)) != NULL)
 		{
-			if (dir->d_type == 8) { //8 für Dateien, nicht für Ordner
-				playlist[ind] = dir->d_name; // Die Playliste werden mit den Dateinamen gefüllt.
+			if (dir->d_type == 8) { //8 fuer Dateien, nicht fuer Ordner
+				playlist[ind] = dir->d_name; // Die Playliste werden mit den Dateinamen gefuellt.
 				ind++;
 			}
 
@@ -95,12 +95,19 @@ int read_dir(char *input_path) { // Verzeichnis wird gelesen
 }
 
 void generate_command() { // Der Play-Befehl wird generiert mit dem aktuellen Index.
+	char *path_input;
+	if(usb_was_plugged){
+		path_input = usbpath; 
+	}else[
+		path_input = path;
+	]
+	if(read_dir(path_input)!=0){
+		printf("File Error!\n");	
+	}
+		
 	strcpy(cmd, "LOAD ");
 	if (usb_was_plugged) {
-		while (determine_usb()) {
-			// Wenn USB nicht bereit, dann warte bis er da ist
-		}
-		//determine_usb();
+
 		strcat(cmd, usb_path);
 	}
 	else {
@@ -111,7 +118,7 @@ void generate_command() { // Der Play-Befehl wird generiert mit dem aktuellen In
 	strcat(cmd, "\n");
 }
 
-void *play_music() { // Beim Betätigen der Play-Taste und wenn das Programm frisch ausgeführt wird, wird das erste Lied gespielt
+void *play_music() { // Beim Betaetigen der Play-Taste und wenn das Programm frisch ausgefuehrt wird, wird das erste Lied gespielt
 	while (1) {
 		if (play == 1 && firstrun == 0) {
 			firstrun = 1;
@@ -123,7 +130,7 @@ void *play_music() { // Beim Betätigen der Play-Taste und wenn das Programm fris
 	return 0;
 } 
 
-void *stop_music(){ // Beim Bestätigen der Play-Taste und wenn bereit eine Musik spielt, wird das Wiedergeben pausiert.
+void *stop_music(){ // Beim Bestaetigen der Play-Taste und wenn bereit eine Musik spielt, wird das Wiedergeben pausiert.
 	while (1) {
 		if (play == 0 && firstrun != 0) {
 			
@@ -135,10 +142,10 @@ void *stop_music(){ // Beim Bestätigen der Play-Taste und wenn bereit eine Musik
 }
 
 
-void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingängen
+void *control() { //Dieser Thread liest alle Tasten und Potis ueber GPIO-Eingaengen
 	while (1) {
 		if (flank_high(PLAY) == HIGH && !(flanken_high(VOR) && !(flanken_high(RUECK)) && !(flanken_high(MODSELECT)) {
-			// Bei Betätigung der Play-Taste wird der Zustand zum Spielen bzw. Pausieren gewechselt.
+			// Bei Betaetigung der Play-Taste wird der Zustand zum Spielen bzw. Pausieren gewechselt.
 			if (play == 0) {
 				play++;
 				delay_no_itr(500);
@@ -150,7 +157,7 @@ void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingänge
 			write(infp, cmd, 128);
 			
 		}
-		if (flank_high(VOR) == HIGH && firstrun != 0 && !(flanken_high(PLAY) && !(flanken_high(RUECK))) { //Bei Betätigung der VOR-Taste wird der Index der Playliste um 1 inkrementiert, wenn das Ende nicht erreicht wurde.
+		if (flank_high(VOR) == HIGH && firstrun != 0 && !(flanken_high(PLAY) && !(flanken_high(RUECK))) { //Bei Betautigung der VOR-Taste wird der Index der Playliste um 1 inkrementiert, wenn das Ende nicht erreicht wurde.
 			if (song_index < size_playlist()-1) {
 				song_index++;
 				delay_no_itr(500);
@@ -160,7 +167,7 @@ void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingänge
 
 
 		}
-		if (flank_high(RUECK) == HIGH && firstrun != 0 && !(flanken_high(VOR) && !(flanken_high(PLAY)) ) { //Ebenso für die RÜCK-Taste
+		if (flank_high(RUECK) == HIGH && firstrun != 0 && !(flanken_high(VOR) && !(flanken_high(PLAY)) ) { //Ebenso fuer die RUECK-Taste
 			if (song_index > 0) {
 				song_index--; 
 				delay_no_itr(500);
@@ -173,25 +180,9 @@ void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingänge
 
 		if (digitalRead(MODSELECT) == HIGH) { //Wechsel auf USB-Stick
 			!usb_was_plugged;
-			/*usb_was_plugged = 1;
-			determine_usb();
-			//generate_command();
-			//write(infp, cmd, 128);
 			delay_no_itr(500);
-
 		}
-		else {
-			if (usb_was_plugged = 1) {//Wenn der USB-Speicher entfernt wird, wird der lokale Speicherort wieder gesucht, um eine neue Playliste zu erstellen.
-				usb_was_plugged = 0;
-				if (read_dir(path) != 0) {
-					printf("Empty Directory!\n");
-					exit(EXIT_FAILURE);
-					//break;
-				}
-			}*/
-			
-		}
-		//set_volume(25); Hier die Funktion für die Volumenregelung
+		//set_volume(25); Hier die Funktion fuer die Volumenregelung
 		
 	}
 	return 0;
@@ -199,8 +190,9 @@ void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingänge
 
 void *monitoring_player() {
 	while (1) {
+		int usb_was_plugged_last = usb_was_plugged;
 		if (read(outfp, output, 128) == 0) {
-			if (strcmp(output, "@P 3") == 1) { //Wenn die Wiedergabe mit dem aktuellen Lied beendet ist, wird es zum nächsten Lied gesprungen.
+			if (strcmp(output, "@P 3") == 1) { //Wenn die Wiedergabe mit dem aktuellen Lied beendet ist, wird es zum naechsten Lied gesprungen.
 				song_index++;
 				generate_command();
 				write(infp, cmd, 128);
@@ -211,11 +203,29 @@ void *monitoring_player() {
 
 			}
 		}
+		if (!usb_was_plugged_last = usb_was_plugged){//Nach Wechsel PLAY druecken
+			write(infp,"PAUSE",128);
+			/*if(determine_usb()){
+				printf("File error\n");
+			};*/
+			//generate_command();
+			//write(infp,cmd,128);
+		}
+
+		if(opendir(usbpath)==NULL && usb_was_plugged == 1){
+			write(infp, "PAUSE",128);
+			!usb_was_plugged;
+			//Fehlerausgabe
+		}else if(opendir(path) == NULL && usb_was_plugged == 0){
+			write(infp, "PAUSE",128);
+			!usb_was_plugged;
+			//Fehlerausgabe
+		}
 	}
 
 }
 
-int determine_usb() { //Erstimpelementation der Einlesefunktion des USB-Speichers
+/*int determine_usb() { //Erstimpelementation der Einlesefunktion des USB-Speichers
 	if (read_dir(usbpath) == 0) { //Lesen des USB-Mouting-Points und Erstellen einer neuer Playliste
 		//strcpy(path, usbpath);
 		return 0;
@@ -223,7 +233,7 @@ int determine_usb() { //Erstimpelementation der Einlesefunktion des USB-Speicher
 	else {
 		return 1;
 	}
-}
+}*/
 
 
 int main() {
@@ -232,13 +242,13 @@ int main() {
 		return 1;
 	}
 
-	signal(SIGINT, siginthandler); // Deklaration des Signal-Händlers
+	signal(SIGINT, siginthandler); // Deklaration des Signal-Hï¿½ndlers
 
 	pinMode(PLAY, INPUT); //GPIO-Freigabe
 	pinMode(VOR, INPUT);
 	pinMode(RUECK, INPUT);
 
-	pullUpDnControl(PLAY, PUD_UP); //Freischalten der Pullwiderstände
+	pullUpDnControl(PLAY, PUD_UP); //Freischalten der Pullwiderstï¿½nde
 	pullUpDnControl(VOR, PUD_UP);
 	pullUpDnControl(RUECK, PUD_UP);
 
@@ -247,6 +257,7 @@ int main() {
 		delay_no_intr(1000);
 	}**/
 	//session_start();
+	
 	printf("Starting playback funtion\n");
 
 	if (popen2("mpg321 -R 123", &infp, &outfp) == 0) {
@@ -287,6 +298,6 @@ int main() {
 	}
 
 
-
+	return 0;
 
 }

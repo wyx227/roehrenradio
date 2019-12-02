@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "popen.h": "c",
+        "flanken.h": "c",
+        "delay.h": "c"
+    }
+}
