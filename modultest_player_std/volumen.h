@@ -1,5 +1,6 @@
 #pragma once
 #define alloca(x)  __builtin_alloca(x)
+#define _POSIX_C_SOURCE 200809L
 
 #include <alsa/asoundlib.h>
 #include <alsa/mixer.h>

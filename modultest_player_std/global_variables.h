@@ -1,5 +1,5 @@
 #pragma once
-
+#include <pthread.h>
 //Pinbelegung der Tasten
 #define PLAY 17
 #define VOR 27

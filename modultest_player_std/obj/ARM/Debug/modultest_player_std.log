@@ -3,5 +3,72 @@
   Validating architecture
   Starting remote build
   Compiling sources:
+  main.c
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(17,2): warning : ‘return’ with no value, in function returning non-void
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(17,2): warning :   return;
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(17,2): warning :   ^~~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(7,5): message : declared here
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(7,5): message :  int flank_high(int pin) {
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(7,5): message :      ^~~~~~~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(50,19): warning : conversion from ‘double’ to ‘int’ may change value [-Wfloat-conversion]
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(50,19): warning :   int adu_linear = floor(m * winkel + 200.0);
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(50,19): warning :                    ^~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(56,16): warning : conversion from ‘double’ to ‘int’ may change value [-Wfloat-conversion]
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(56,16): warning :   int adu_log = floor(4.25 * pow(10, 6) * winkel + 200.0);
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(56,16): warning :                 ^~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(104,1): warning : control reaches end of non-void function [-Wreturn-type]
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(104,1): warning :  }
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(104,1): warning :  ^
+  threads.c
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(17,2): warning : ‘return’ with no value, in function returning non-void
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(17,2): warning :   return;
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(17,2): warning :   ^~~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(7,5): message : declared here
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(7,5): message :  int flank_high(int pin) {
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(7,5): message :      ^~~~~~~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(50,19): warning : conversion from ‘double’ to ‘int’ may change value [-Wfloat-conversion]
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(50,19): warning :   int adu_linear = floor(m * winkel + 200.0);
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(50,19): warning :                    ^~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(56,16): warning : conversion from ‘double’ to ‘int’ may change value [-Wfloat-conversion]
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(56,16): warning :   int adu_log = floor(4.25 * pow(10, 6) * winkel + 200.0);
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(56,16): warning :                 ^~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\threads.c(10,5): warning : implicit declaration of function ‘generate_command’ [-Wimplicit-function-declaration]
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\threads.c(10,5): warning :      generate_command();
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\threads.c(10,5): warning :      ^~~~~~~~~~~~~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\threads.c(75,21): warning : implicit declaration of function ‘size_playlist’ [-Wimplicit-function-declaration]
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\threads.c(75,21): warning :     if (song_index < size_playlist() - 1) {
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\threads.c(75,21): warning :                      ^~~~~~~~~~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(104,1): warning : control reaches end of non-void function [-Wreturn-type]
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(104,1): warning :  }
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(104,1): warning :  ^
   Linking objects
-  modultest_player_std.vcxproj -> C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\bin\ARM\Debug\modultest_player_std.out
+/usr/bin/ld : error : /home/pi/projects/modultest_player_std/obj/ARM/Debug/threads.o:/home/pi/projects/modultest_player_std/global_variables.h:9: multiple definition of `song_index'; /home/pi/projects/modultest_player_std/obj/ARM/Debug/main.o:/home/pi/projects/modultest_player_std/global_variables.h:9: first defined here
+/usr/bin/ld : error : /home/pi/projects/modultest_player_std/obj/ARM/Debug/threads.o:/home/pi/projects/modultest_player_std/global_variables.h:10: multiple definition of `play'; /home/pi/projects/modultest_player_std/obj/ARM/Debug/main.o:/home/pi/projects/modultest_player_std/global_variables.h:10: first defined here
+/usr/bin/ld : error : /home/pi/projects/modultest_player_std/obj/ARM/Debug/threads.o:/home/pi/projects/modultest_player_std/global_variables.h:11: multiple definition of `firstrun'; /home/pi/projects/modultest_player_std/obj/ARM/Debug/main.o:/home/pi/projects/modultest_player_std/global_variables.h:11: first defined here
+/usr/bin/ld : error : /home/pi/projects/modultest_player_std/obj/ARM/Debug/threads.o:/home/pi/projects/modultest_player_std/global_variables.h:12: multiple definition of `path'; /home/pi/projects/modultest_player_std/obj/ARM/Debug/main.o:/home/pi/projects/modultest_player_std/global_variables.h:12: first defined here
+/usr/bin/ld : error : /home/pi/projects/modultest_player_std/obj/ARM/Debug/threads.o:/home/pi/projects/modultest_player_std/global_variables.h:16: multiple definition of `playlist'; /home/pi/projects/modultest_player_std/obj/ARM/Debug/main.o:/home/pi/projects/modultest_player_std/global_variables.h:16: first defined here
+/usr/bin/ld : error : /home/pi/projects/modultest_player_std/obj/ARM/Debug/threads.o: in function `flank_high':
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(7): error : multiple definition of `flank_high'; /home/pi/projects/modultest_player_std/obj/ARM/Debug/main.o:/home/pi/projects/modultest_player_std/flanken.h:7: first defined here
+/usr/bin/ld : error : /home/pi/projects/modultest_player_std/obj/ARM/Debug/threads.o: in function `popen2':
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\popen.h(18): error : multiple definition of `popen2'; /home/pi/projects/modultest_player_std/obj/ARM/Debug/main.o:/home/pi/projects/modultest_player_std/popen.h:18: first defined here
+/usr/bin/ld : error : /home/pi/projects/modultest_player_std/obj/ARM/Debug/threads.o: in function `set_volume':
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(25): error : multiple definition of `set_volume'; /home/pi/projects/modultest_player_std/obj/ARM/Debug/main.o:/home/pi/projects/modultest_player_std/volumen.h:25: first defined here
+/usr/bin/ld : error : /home/pi/projects/modultest_player_std/obj/ARM/Debug/threads.o: in function `poti_linear':
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(48): error : multiple definition of `poti_linear'; /home/pi/projects/modultest_player_std/obj/ARM/Debug/main.o:/home/pi/projects/modultest_player_std/volumen.h:48: first defined here
+/usr/bin/ld : error : /home/pi/projects/modultest_player_std/obj/ARM/Debug/threads.o: in function `poti_log':
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(55): error : multiple definition of `poti_log'; /home/pi/projects/modultest_player_std/obj/ARM/Debug/main.o:/home/pi/projects/modultest_player_std/volumen.h:55: first defined here
+/usr/bin/ld : error : /home/pi/projects/modultest_player_std/obj/ARM/Debug/threads.o: in function `get_parameter':
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(60): error : multiple definition of `get_parameter'; /home/pi/projects/modultest_player_std/obj/ARM/Debug/main.o:/home/pi/projects/modultest_player_std/volumen.h:60: first defined here
+/usr/bin/ld : error : /home/pi/projects/modultest_player_std/obj/ARM/Debug/threads.o: in function `filling':
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(75): error : multiple definition of `filling'; /home/pi/projects/modultest_player_std/obj/ARM/Debug/main.o:/home/pi/projects/modultest_player_std/volumen.h:75: first defined here
+/usr/bin/ld : error : /home/pi/projects/modultest_player_std/obj/ARM/Debug/threads.o: in function `linearisieren':
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(97): error : multiple definition of `linearisieren'; /home/pi/projects/modultest_player_std/obj/ARM/Debug/main.o:/home/pi/projects/modultest_player_std/volumen.h:97: first defined here
+/usr/bin/ld : error : /home/pi/projects/modultest_player_std/obj/ARM/Debug/threads.o: in function `status_LED':
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\status_display.h(9): error : multiple definition of `status_LED'; /home/pi/projects/modultest_player_std/obj/ARM/Debug/main.o:/home/pi/projects/modultest_player_std/status_display.h:9: first defined here
+/usr/bin/ld : error : /home/pi/projects/modultest_player_std/obj/ARM/Debug/threads.o: in function `cleanup':
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\handling.h(9): error : multiple definition of `cleanup'; /home/pi/projects/modultest_player_std/obj/ARM/Debug/main.o:/home/pi/projects/modultest_player_std/handling.h:9: first defined here
+/usr/bin/ld : error : /home/pi/projects/modultest_player_std/obj/ARM/Debug/threads.o: in function `siginthandler':
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\handling.h(15): error : multiple definition of `siginthandler'; /home/pi/projects/modultest_player_std/obj/ARM/Debug/main.o:/home/pi/projects/modultest_player_std/handling.h:15: first defined here
+/usr/bin/ld : error : /home/pi/projects/modultest_player_std/obj/ARM/Debug/threads.o: in function `delay_no_itr':
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\delay.h(7): error : multiple definition of `delay_no_itr'; /home/pi/projects/modultest_player_std/obj/ARM/Debug/main.o:/home/pi/projects/modultest_player_std/delay.h:7: first defined here
+collect2 : error : ld returned 1 exit status

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include "status_display.h"
-
+#include <unistd.h>
 void cleanup() {
 	puts("\nTerminating...\n");
 	system("sudo pkill mpg321");

@@ -6,7 +6,7 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <fcntl.h>
-
+#include <unistd.h>
 
 #define BUFSIZE 128;
 

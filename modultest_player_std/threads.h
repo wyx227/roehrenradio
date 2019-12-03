@@ -13,7 +13,7 @@
 #include "handling.h"
 #include "delay.h"
 #include "status_display.h"
-
+#include <unistd.h>
 
 void *monitoring();
 void *play_music();
