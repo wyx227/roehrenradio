@@ -1,0 +1,35 @@
+﻿  Validating sources
+  Copying sources remotely to 'roehrenradio'
+  Validating architecture
+  Starting remote build
+  Compiling sources:
+  modt_1.c
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(17,2): warning : ‘return’ with no value, in function returning non-void
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(17,2): warning :   return;
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(17,2): warning :   ^~~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(7,5): message : declared here
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(7,5): message :  int flank_high(int pin) {
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(7,5): message :      ^~~~~~~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(129,9): warning : passing argument 1 of ‘strcpy’ from incompatible pointer type [-Wincompatible-pointer-types]
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(129,9): warning :   strcpy(merk, playlist);
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(129,9): warning :          ^~~~
+/usr/include/string.h(121,14): message : expected ‘char * restrict’ but argument is of type ‘char **’
+/usr/include/string.h(121,14): message :  extern char *strcpy (char *__restrict __dest, const char *__restrict __src)
+/usr/include/string.h(121,14): message :               ^~~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(129,15): warning : passing argument 2 of ‘strcpy’ from incompatible pointer type [-Wincompatible-pointer-types]
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(129,15): warning :   strcpy(merk, playlist);
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(129,15): warning :                ^~~~~~~~
+/usr/include/string.h(121,14): message : expected ‘const char * restrict’ but argument is of type ‘char **’
+/usr/include/string.h(121,14): message :  extern char *strcpy (char *__restrict __dest, const char *__restrict __src)
+/usr/include/string.h(121,14): message :               ^~~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(108,6): warning : unused variable ‘zustand’ [-Wunused-variable]
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(108,6): warning :   int zustand=usb_was_plugged;
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(108,6): warning :       ^~~~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(196,8): warning : unused variable ‘cmdgen_succeed’ [-Wunused-variable]
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(196,8): warning :     int cmdgen_succeed;
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(196,8): warning :         ^~~~~~~~~~~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(167,6): warning : unused variable ‘cmdgen_succeed’ [-Wunused-variable]
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(167,6): warning :   int cmdgen_succeed;
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(167,6): warning :       ^~~~~~~~~~~~~~
+  Linking objects
+  modultest_player_std.vcxproj -> C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\bin\ARM\Debug\modultest_player_std.out

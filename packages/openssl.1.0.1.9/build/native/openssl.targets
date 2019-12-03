@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" InitialTargets="openssl_init">
+  <PropertyGroup Label="Default initializers for properties">
+    <Linkage-openssl Condition="'$(Linkage-openssl)' == ''">dynamic</Linkage-openssl>
+    <CallingConvention-openssl Condition="'$(CallingConvention-openssl)' == ''">cdecl</CallingConvention-openssl>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\build\native\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Label="Win32 and v110 and dynamic and Debug" Condition="'$(Platform)' == 'Win32' And ( $(PlatformToolset.IndexOf('v110')) &gt; -1 Or '$(PlatformToolset)' == 'WindowsKernelModeDriver8.0' Or '$(PlatformToolset)' == 'WindowsApplicationForDrivers8.0' Or '$(PlatformToolset)' == 'WindowsUserModeDriver8.0' ) And '$(Linkage-openssl)' == 'dynamic' And '$(Configuration)' == 'Debug'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\build\native\include\Win32\v110\dynamic\Debug;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\build\native\lib\Win32\v110\dynamic\Debug\ssleay32.lib;$(MSBuildThisFileDirectory)..\..\build\native\lib\Win32\v110\dynamic\Debug\libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Label="x64 and v110 and dynamic and Debug" Condition="'$(Platform)' == 'x64' And ( $(PlatformToolset.IndexOf('v110')) &gt; -1 Or '$(PlatformToolset)' == 'WindowsKernelModeDriver8.0' Or '$(PlatformToolset)' == 'WindowsApplicationForDrivers8.0' Or '$(PlatformToolset)' == 'WindowsUserModeDriver8.0' ) And '$(Linkage-openssl)' == 'dynamic' And '$(Configuration)' == 'Debug'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\build\native\include\x64\v110\dynamic\Debug;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\build\native\lib\x64\v110\dynamic\Debug\ssleay32.lib;$(MSBuildThisFileDirectory)..\..\build\native\lib\x64\v110\dynamic\Debug\libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Label="Win32 and v100 and dynamic and Debug" Condition="'$(Platform)' == 'Win32' And '$(PlatformToolset)' == 'v100' And '$(Linkage-openssl)' == 'dynamic' And '$(Configuration)' == 'Debug'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\build\native\include\Win32\v100\dynamic\Debug;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\build\native\lib\Win32\v100\dynamic\Debug\ssleay32.lib;$(MSBuildThisFileDirectory)..\..\build\native\lib\Win32\v100\dynamic\Debug\libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Label="x64 and v100 and dynamic and Debug" Condition="'$(Platform)' == 'x64' And '$(PlatformToolset)' == 'v100' And '$(Linkage-openssl)' == 'dynamic' And '$(Configuration)' == 'Debug'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\build\native\include\x64\v100\dynamic\Debug;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\build\native\lib\x64\v100\dynamic\Debug\ssleay32.lib;$(MSBuildThisFileDirectory)..\..\build\native\lib\x64\v100\dynamic\Debug\libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Label="Win32 and v110 and static and Debug" Condition="'$(Platform)' == 'Win32' And ( $(PlatformToolset.IndexOf('v110')) &gt; -1 Or '$(PlatformToolset)' == 'WindowsKernelModeDriver8.0' Or '$(PlatformToolset)' == 'WindowsApplicationForDrivers8.0' Or '$(PlatformToolset)' == 'WindowsUserModeDriver8.0' ) And '$(Linkage-openssl)' == 'static' And '$(Configuration)' == 'Debug'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\build\native\include\Win32\v110\static\Debug;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\build\native\lib\Win32\v110\static\Debug\ssleay32-static.lib;$(MSBuildThisFileDirectory)..\..\build\native\lib\Win32\v110\static\Debug\libeay32-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Label="x64 and v110 and static and Debug" Condition="'$(Platform)' == 'x64' And ( $(PlatformToolset.IndexOf('v110')) &gt; -1 Or '$(PlatformToolset)' == 'WindowsKernelModeDriver8.0' Or '$(PlatformToolset)' == 'WindowsApplicationForDrivers8.0' Or '$(PlatformToolset)' == 'WindowsUserModeDriver8.0' ) And '$(Linkage-openssl)' == 'static' And '$(Configuration)' == 'Debug'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\build\native\include\x64\v110\static\Debug;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\build\native\lib\x64\v110\static\Debug\ssleay32-static.lib;$(MSBuildThisFileDirectory)..\..\build\native\lib\x64\v110\static\Debug\libeay32-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Label="Win32 and v100 and static and Debug" Condition="'$(Platform)' == 'Win32' And '$(PlatformToolset)' == 'v100' And '$(Linkage-openssl)' == 'static' And '$(Configuration)' == 'Debug'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\build\native\include\Win32\v100\static\Debug;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\build\native\lib\Win32\v100\static\Debug\ssleay32-static.lib;$(MSBuildThisFileDirectory)..\..\build\native\lib\Win32\v100\static\Debug\libeay32-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Label="x64 and v100 and static and Debug" Condition="'$(Platform)' == 'x64' And '$(PlatformToolset)' == 'v100' And '$(Linkage-openssl)' == 'static' And '$(Configuration)' == 'Debug'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\build\native\include\x64\v100\static\Debug;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\build\native\lib\x64\v100\static\Debug\ssleay32-static.lib;$(MSBuildThisFileDirectory)..\..\build\native\lib\x64\v100\static\Debug\libeay32-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Label="Win32 and v110 and dynamic and Release" Condition="'$(Platform)' == 'Win32' And ( $(PlatformToolset.IndexOf('v110')) &gt; -1 Or '$(PlatformToolset)' == 'WindowsKernelModeDriver8.0' Or '$(PlatformToolset)' == 'WindowsApplicationForDrivers8.0' Or '$(PlatformToolset)' == 'WindowsUserModeDriver8.0' ) And '$(Linkage-openssl)' == 'dynamic' And '$(Configuration)' == 'Release'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\build\native\include\Win32\v110\dynamic\Release;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\build\native\lib\Win32\v110\dynamic\Release\ssleay32.lib;$(MSBuildThisFileDirectory)..\..\build\native\lib\Win32\v110\dynamic\Release\libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Label="x64 and v110 and dynamic and Release" Condition="'$(Platform)' == 'x64' And ( $(PlatformToolset.IndexOf('v110')) &gt; -1 Or '$(PlatformToolset)' == 'WindowsKernelModeDriver8.0' Or '$(PlatformToolset)' == 'WindowsApplicationForDrivers8.0' Or '$(PlatformToolset)' == 'WindowsUserModeDriver8.0' ) And '$(Linkage-openssl)' == 'dynamic' And '$(Configuration)' == 'Release'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\build\native\include\x64\v110\dynamic\Release;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\build\native\lib\x64\v110\dynamic\Release\ssleay32.lib;$(MSBuildThisFileDirectory)..\..\build\native\lib\x64\v110\dynamic\Release\libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Label="Win32 and v100 and dynamic and Release" Condition="'$(Platform)' == 'Win32' And '$(PlatformToolset)' == 'v100' And '$(Linkage-openssl)' == 'dynamic' And '$(Configuration)' == 'Release'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\build\native\include\Win32\v100\dynamic\Release;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\build\native\lib\Win32\v100\dynamic\Release\ssleay32.lib;$(MSBuildThisFileDirectory)..\..\build\native\lib\Win32\v100\dynamic\Release\libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Label="x64 and v100 and dynamic and Release" Condition="'$(Platform)' == 'x64' And '$(PlatformToolset)' == 'v100' And '$(Linkage-openssl)' == 'dynamic' And '$(Configuration)' == 'Release'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\build\native\include\x64\v100\dynamic\Release;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\build\native\lib\x64\v100\dynamic\Release\ssleay32.lib;$(MSBuildThisFileDirectory)..\..\build\native\lib\x64\v100\dynamic\Release\libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Label="Win32 and v110 and static and Release" Condition="'$(Platform)' == 'Win32' And ( $(PlatformToolset.IndexOf('v110')) &gt; -1 Or '$(PlatformToolset)' == 'WindowsKernelModeDriver8.0' Or '$(PlatformToolset)' == 'WindowsApplicationForDrivers8.0' Or '$(PlatformToolset)' == 'WindowsUserModeDriver8.0' ) And '$(Linkage-openssl)' == 'static' And '$(Configuration)' == 'Release'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\build\native\include\Win32\v110\static\Release;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\build\native\lib\Win32\v110\static\Release\ssleay32-static.lib;$(MSBuildThisFileDirectory)..\..\build\native\lib\Win32\v110\static\Release\libeay32-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Label="x64 and v110 and static and Release" Condition="'$(Platform)' == 'x64' And ( $(PlatformToolset.IndexOf('v110')) &gt; -1 Or '$(PlatformToolset)' == 'WindowsKernelModeDriver8.0' Or '$(PlatformToolset)' == 'WindowsApplicationForDrivers8.0' Or '$(PlatformToolset)' == 'WindowsUserModeDriver8.0' ) And '$(Linkage-openssl)' == 'static' And '$(Configuration)' == 'Release'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\build\native\include\x64\v110\static\Release;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\build\native\lib\x64\v110\static\Release\ssleay32-static.lib;$(MSBuildThisFileDirectory)..\..\build\native\lib\x64\v110\static\Release\libeay32-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Label="Win32 and v100 and static and Release" Condition="'$(Platform)' == 'Win32' And '$(PlatformToolset)' == 'v100' And '$(Linkage-openssl)' == 'static' And '$(Configuration)' == 'Release'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\build\native\include\Win32\v100\static\Release;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\build\native\lib\Win32\v100\static\Release\ssleay32-static.lib;$(MSBuildThisFileDirectory)..\..\build\native\lib\Win32\v100\static\Release\libeay32-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Label="x64 and v100 and static and Release" Condition="'$(Platform)' == 'x64' And '$(PlatformToolset)' == 'v100' And '$(Linkage-openssl)' == 'static' And '$(Configuration)' == 'Release'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\build\native\include\x64\v100\static\Release;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)..\..\build\native\lib\x64\v100\static\Release\ssleay32-static.lib;$(MSBuildThisFileDirectory)..\..\build\native\lib\x64\v100\static\Release\libeay32-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)\openssl-propertiesui-2ce887fb-8f2d-41cc-9b03-a1a1d9482503.xml" />
+  </ItemGroup>
+  <UsingTask TaskName="openssl_Contains" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" TaskFactory="CodeTaskFactory">
+    <ParameterGroup>
+      <Text Output="false" ParameterType="System.String" />
+      <Library Output="false" Required="true" ParameterType="System.String" />
+      <Value Output="false" Required="true" ParameterType="System.String" />
+      <Result Output="true" ParameterType="System.String" />
+    </ParameterGroup>
+    <Task>
+      <Code>Result = ((Text ?? "").Split(';').Contains(Library) ) ? Value : String.Empty;</Code>
+    </Task>
+  </UsingTask>
+  <Target Name="openssl_init">
+    <openssl_Contains Text="Linkage-dynamic" Library="openssl" Value="dynamic" Condition="'$(Linkage-openssl)'==''">
+      <Output TaskParameter="Result" PropertyName="Linkage-openssl" />
+    </openssl_Contains>
+    <openssl_Contains Text="Linkage-static" Library="openssl" Value="static" Condition="'$(Linkage-openssl)'==''">
+      <Output TaskParameter="Result" PropertyName="Linkage-openssl" />
+    </openssl_Contains>
+    <openssl_Contains Text="Linkage-ltcg" Library="openssl" Value="ltcg" Condition="'$(Linkage-openssl)'==''">
+      <Output TaskParameter="Result" PropertyName="Linkage-openssl" />
+    </openssl_Contains>
+    <openssl_Contains Text="Linkage-sxs" Library="openssl" Value="sxs" Condition="'$(Linkage-openssl)'==''">
+      <Output TaskParameter="Result" PropertyName="Linkage-openssl" />
+    </openssl_Contains>
+    <openssl_Contains Text="CallingConvention-cdecl" Library="openssl" Value="cdecl" Condition="'$(CallingConvention-openssl)'==''">
+      <Output TaskParameter="Result" PropertyName="CallingConvention-openssl" />
+    </openssl_Contains>
+    <openssl_Contains Text="CallingConvention-stdcall" Library="openssl" Value="stdcall" Condition="'$(CallingConvention-openssl)'==''">
+      <Output TaskParameter="Result" PropertyName="CallingConvention-openssl" />
+    </openssl_Contains>
+    <openssl_Contains Text="CallingConvention-fastcall" Library="openssl" Value="fastcall" Condition="'$(CallingConvention-openssl)'==''">
+      <Output TaskParameter="Result" PropertyName="CallingConvention-openssl" />
+    </openssl_Contains>
+    <openssl_Contains Text="CallingConvention-thiscall" Library="openssl" Value="thiscall" Condition="'$(CallingConvention-openssl)'==''">
+      <Output TaskParameter="Result" PropertyName="CallingConvention-openssl" />
+    </openssl_Contains>
+    <openssl_Contains Text="CallingConvention-clrcall" Library="openssl" Value="clrcall" Condition="'$(CallingConvention-openssl)'==''">
+      <Output TaskParameter="Result" PropertyName="CallingConvention-openssl" />
+    </openssl_Contains>
+  </Target>
+</Project>

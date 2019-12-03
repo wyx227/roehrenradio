@@ -2,6 +2,8 @@
 
 //Flankenerkennung
 
+int flank_high(int pin);
+
 int flank_high(int pin) {
 	int old_level = 0;
 	int new_level;
