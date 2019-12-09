@@ -3,5 +3,21 @@
   Validating architecture
   Starting remote build
   Compiling sources:
+  modt_1.c
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(15,2): warning : ‘return’ with no value, in function returning non-void
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(15,2): warning :   return;
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(15,2): warning :   ^~~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(5,5): message : declared here
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(5,5): message :  int flank_high(int pin) {
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\flanken.h(5,5): message :      ^~~~~~~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(49,19): warning : conversion from ‘double’ to ‘int’ may change value [-Wfloat-conversion]
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(49,19): warning :   int adu_linear = floor(m * winkel + 200.0);
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(49,19): warning :                    ^~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(55,16): warning : conversion from ‘double’ to ‘int’ may change value [-Wfloat-conversion]
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(55,16): warning :   int adu_log = floor(4.25 * pow(10, 6) * winkel + 200.0);
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(55,16): warning :                 ^~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(103,1): warning : control reaches end of non-void function [-Wreturn-type]
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(103,1): warning :  }
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(103,1): warning :  ^
   Linking objects
   modultest_player_std.vcxproj -> C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\bin\ARM\Debug\modultest_player_std.out

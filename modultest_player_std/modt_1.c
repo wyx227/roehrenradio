@@ -18,11 +18,21 @@
 #include "handling.h"
 #include "delay.h"
 #include "status_display.h"
+#include <mcp3004.h>
 
 //Pinbelegung der Tasten
 #define PLAY 17
 #define VOR 27
 #define RUECK 22
+
+
+#define MUX1 14
+#define MUX2 15
+#define MUX3 18
+
+#define BASE 200
+#define SPI_CHAN 0
+
 //globale Variablen
 pthread_t t_play,t_stop, t_control, t_monitor; //pthread-Bezeichner aller auszuführenden Threads
 int song_index = 0; //Index der Playliste
@@ -71,7 +81,7 @@ int read_dir() { // Verzeichnis wird gelesen
 
 		}
 		closedir(d); 
-		return 0;
+		//return 0;
 	}
 	else {
 		return 1; // Sollte das Verzeichnis nicht so zugegriffen werden, danach wird ein Fehlercode ausgegeben.
@@ -79,6 +89,9 @@ int read_dir() { // Verzeichnis wird gelesen
 
 	if (playlist[0] == 0) { // Sollte das Verzeichnis leer sein, wird ein Fehlercode ausgegeben.
 		return 1;
+	}
+	else {
+		return 0;
 	}
 	
 }
@@ -93,19 +106,27 @@ void generate_command() { // Der Play-Befehl wird generiert mit dem aktuellen In
 void *monitoring() { //Überwacht, ob das Spielen vom aktuellen Lied beendet ist.
 	while (1) {
 		if (read(outfp, output, 128)) {
-			if (strstr(output, "@P 3")) {
-				song_index++;
-				generate_command();
+			if (strstr(output, "@P 3"))
+			{
+				if (song_index != size_playlist(playlist)-1) {
+					song_index++;
+					generate_command();
+				}
+				else {
+					song_index = 0; //Reset nach dem Abspielen
+				}
+
 				if (write(infp, cmd, 128) == -1) {
 					status_LED(3);
 					exit(EXIT_FAILURE);
 				}
+				//fflush(stdin);
 			}
-			if (strstr(output, "@I ")) {
+			/*if (strstr(output, "@I ")) {
 				printf("Error reading file, please check your media\n");
 				status_LED(2);
 				exit(EXIT_FAILURE);
-			}
+			}*/
 		}
 		else {
 			printf("Error reading Stdout, critical error!\n");
@@ -113,11 +134,30 @@ void *monitoring() { //Überwacht, ob das Spielen vom aktuellen Lied beendet ist.
 			exit(EXIT_FAILURE);
 		}
 
+		if (play == 0 && firstrun != 0) {
+
+			if (write(infp, "PAUSE\n", 128) == -1) {
+				status_LED(3);
+				exit(EXIT_FAILURE);
+			}
+
+		}
+
+		if (play == 1 && firstrun == 0) {
+			firstrun = 1;
+			generate_command();
+			if (write(infp, cmd, 128) == -1) {
+				status_LED(3);
+				exit(EXIT_FAILURE);
+			}
+
+		}
+
 		
 	}
 }
 
-void *play_music() { // Beim Betätigen der Play-Taste und wenn das Programm frisch ausgeführt wird, wird das erste Lied gespielt
+/*void *play_music() { // Beim Betätigen der Play-Taste und wenn das Programm frisch ausgeführt wird, wird das erste Lied gespielt
 	while (1) {
 		if (play == 1 && firstrun == 0) {
 			firstrun = 1;
@@ -144,7 +184,7 @@ void *stop_music(){ // Beim Bestätigen der Play-Taste und wenn bereit eine Musik
 		}
 	}
 	return 0;
-}
+}*/
 
 
 void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingängen
@@ -186,7 +226,8 @@ void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingänge
 
 		}
 		//set_volume(25);
-		
+		set_volume(analogRead(BASE + 2) / 50);
+		delay_no_itr(100);
 	}
 	return 0;
 }
@@ -196,6 +237,12 @@ void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingänge
 int main() {
 	if (wiringPiSetupSys() == -1) { // Beim Fehler der GPIO-Freigabe wird das Programm direkt beendet.
 		printf("Einrichten WiringPI fehlgeschlagen!\n");
+		status_LED(3);
+		return 1;
+	}
+
+	if (mcp3004Setup(BASE, SPI_CHAN) == -1) {
+		printf("Einrichtung ADU fehlgeschalgen!\n");
 		status_LED(3);
 		return 1;
 	}
@@ -210,10 +257,16 @@ int main() {
 	pullUpDnControl(VOR, PUD_UP);
 	pullUpDnControl(RUECK, PUD_UP);
 
+	
+	digitalWrite(MUX1, LOW);
+	digitalWrite(MUX2, LOW);
+	digitalWrite(MUX3, HIGH);
+
 
 
 	if (read_dir() == 0) {
 		printf("Starting playback funtion\n");
+		status_LED(1);
 
 		if (popen2("mpg321 -R 123", &infp, &outfp) == 0) {
 			printf("Starting mpg321 player failed, exiting...\n");
@@ -222,27 +275,27 @@ int main() {
 		}
 		status_LED(1);
 
-		if (pthread_create(&t_play, NULL, play_music, NULL) != 0) {
+		/*if (pthread_create(&t_play, NULL, play_music, NULL) != 0) {
 			printf("Creating playback thread failed, exiting...\n");
 			status_LED(3);
 			return 1;
-		}
+		}*/
 		if (pthread_create(&t_control, NULL, control, NULL) != 0) {
 			printf("Creating input control thread failed, exiting...\n");
 			status_LED(3);
 			return 1;
 		}
-		if (pthread_create(&t_stop, NULL, stop_music, NULL) != 0) {
+		/*if (pthread_create(&t_stop, NULL, stop_music, NULL) != 0) {
 			printf("Creating pausing control thread failed, exiting...\n");
 			status_LED(3);
 			return 1;
-		}
+		}*/
 		if (pthread_create(&t_monitor, NULL, monitoring, NULL) != 0) {
 			printf("Creating monitoring thread failed, exiting...\n");
 			status_LED(3);
 			return 1;
 		}
-		if (pthread_join(t_stop, NULL) != 0) {
+		/*if (pthread_join(t_stop, NULL) != 0) {
 			printf("Starting pausing thread failed, exiting...\n");
 			status_LED(3);
 			return 1;
@@ -252,7 +305,7 @@ int main() {
 			printf("Starting playing thread failed, exiting...\n");
 			status_LED(3);
 			return 1;
-		}
+		}*/
 		if (pthread_join(t_control, NULL) != 0) {
 			printf("Starting control thread failed, exiting...\n");
 			status_LED(3);
@@ -275,7 +328,7 @@ int main() {
 			status_LED(3);
 			return 1;
 		}
-		//
+
 		status_LED(4);
 		return 0;
 
