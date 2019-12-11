@@ -3,8 +3,8 @@
 #include <wiringPi.h>
 
 #define POWERON 16 //Green:
-#define FILE_ERROR 20 //
-#define FATAL_ERROR 21 //
+#define FILE_ERROR 21 //Blau
+#define FATAL_ERROR 20 //Rot
 
 void status_LED(int status_code) {
 	switch (status_code) {

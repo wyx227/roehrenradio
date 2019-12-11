@@ -10,8 +10,7 @@ void cleanup() {
 }
 
 void siginthandler(int sig_num) {
-	//signal(SIGINT, siginthandler);
-	//printf("Exiting with Ctrl+C...\n");
+
 
 	cleanup();
 	exit(EXIT_SUCCESS);

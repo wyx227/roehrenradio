@@ -16,6 +16,11 @@ C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\vol
 C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(55,16): warning : conversion from ‘double’ to ‘int’ may change value [-Wfloat-conversion]
 C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(55,16): warning :   int adu_log = floor(4.25 * pow(10, 6) * winkel + 200.0);
 C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(55,16): warning :                 ^~~~~
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(237,3): warning : "/*" within comment [-Wcomment]
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(237,3): warning :    /*
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(191,6): warning : unused variable ‘analog_input’ [-Wunused-variable]
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(191,6): warning :   int analog_input;
+C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\modt_1.c(191,6): warning :       ^~~~~~~~~~~~
 C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(103,1): warning : control reaches end of non-void function [-Wreturn-type]
 C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(103,1): warning :  }
 C:\Users\wyx22\Documents\WIP\Studienarbeit\roehrenradio\modultest_player_std\volumen.h(103,1): warning :  ^
