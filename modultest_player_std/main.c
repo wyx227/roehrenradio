@@ -34,10 +34,10 @@
 #define SPI_CHAN 0
 
 //globale Variablen
-pthread_t t_play,t_stop, t_control, t_monitor; //pthread-Bezeichner aller auszuführenden Threads
+pthread_t t_control, t_monitor; //pthread-Bezeichner aller auszuführenden Threads
 int song_index = 0; //Index der Playliste
-int play = 0; // Variable, ob die Playtaste gedrückt wird, also ob die Musik gespielt wurde
-int fresh_start = 0; // Variable, ob es sich um den frischen Start handelt
+//int play = 0; // Variable, ob die Playtaste gedrückt wird, also ob die Musik gespielt wurde
+int fresh_start = 1; // Variable, ob es sich um den frischen Start handelt
 char *path = "//home//pi//music//"; //vorgegebener Pfad zur Speicherung der Musikdateien
 int infp, outfp; // Bezeichner für die Stdin und Stdout des durch Pipe gestarteten Prozesses
 char cmd[128]; // Die an stdin zu sendenden Befehle
@@ -110,12 +110,12 @@ void *monitoring() { //Überwacht, ob das Spielen vom aktuellen Lied beendet ist.
 			{
 				if (song_index != size_playlist(playlist)-1) {
 					song_index++;
-					generate_command();
+					
 				}
 				else {
 					song_index = 0; //Reset nach dem Abspielen
 				}
-
+				generate_command();
 				if (write(infp, cmd, 128) == -1) {
 					status_LED(3);
 					exit(EXIT_FAILURE);
@@ -132,7 +132,7 @@ void *monitoring() { //Überwacht, ob das Spielen vom aktuellen Lied beendet ist.
 	}
 }
 
-void *play_music() { // Beim Betätigen der Play-Taste und wenn das Programm frisch ausgeführt wird, wird das erste Lied gespielt
+/*void *play_music() { // Beim Betätigen der Play-Taste und wenn das Programm frisch ausgeführt wird, wird das erste Lied gespielt
 	while (1) {
 		if (play == 1 && fresh_start == 0) {
 			fresh_start = 1;
@@ -143,6 +143,7 @@ void *play_music() { // Beim Betätigen der Play-Taste und wenn das Programm fris
 			}
 			
 		}
+
 	}
 	return 0;
 } 
@@ -159,20 +160,33 @@ void *stop_music(){ // Beim Bestätigen der Play-Taste und wenn bereit eine Musik
 		}
 	}
 	return 0;
-}
+}*/
 
 
 void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingängen. Gleichzeitiges Druecken von Tasten wird ausgeschlossen.
 	int analog_input;
 	while (1) {
 		if ((flank_high(PLAY) == HIGH) && !(flank_high(VOR)) && !(flank_high(RUECK))) { // Bei Betätigung der Play-Taste wird der Zustand zum Spielen bzw. Pausieren gewechselt.
-			if (play == 0) {
+			/*if (play == 0) {
 				play++; //Merkvariable, ob Wiedergabe gestartet wird.
 				delay_no_itr(500);
 			}
 			else {
 				play--;
 				delay_no_itr(500);
+			}*/
+			if (fresh_start == 0) {
+				if (write(infp, "PAUSE\n", 128) == -1) { //Wenn die Wiedergabe pausiert ist, wird durch Eingabe von "PAUSE" die Wiedergabe fortgesetzt
+					status_LED(3);
+					exit(EXIT_FAILURE);
+				}
+			}
+			else {
+				generate_command();
+				if (write(infp, cmd, 128) == -1) {
+					status_LED(3);
+					exit(EXIT_FAILURE);
+				}
 			}
 			
 		}
@@ -214,7 +228,7 @@ void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingänge
 			set_volume(9);
 		}
 		*/
-		delay_no_itr(100);
+		//delay_no_itr(100);
 	}
 	return 0;
 }
@@ -262,27 +276,27 @@ int main() {
 		}
 		status_LED(1);
 
-		if (pthread_create(&t_play, NULL, play_music, NULL) != 0) {
+		/*if (pthread_create(&t_play, NULL, play_music, NULL) != 0) {
 			printf("Creating playback thread failed, exiting...\n");
 			status_LED(3);
 			return 1;
-		}
+		}*/
 		if (pthread_create(&t_control, NULL, control, NULL) != 0) {
 			printf("Creating input control thread failed, exiting...\n");
 			status_LED(3);
 			return 1;
 		}
-		if (pthread_create(&t_stop, NULL, stop_music, NULL) != 0) {
+		/*if (pthread_create(&t_stop, NULL, stop_music, NULL) != 0) {
 			printf("Creating pausing control thread failed, exiting...\n");
 			status_LED(3);
 			return 1;
-		}
+		}*/
 		if (pthread_create(&t_monitor, NULL, monitoring, NULL) != 0) {
 			printf("Creating monitoring thread failed, exiting...\n");
 			status_LED(3);
 			return 1;
 		}
-		if (pthread_join(t_stop, NULL) != 0) {
+		/*if (pthread_join(t_stop, NULL) != 0) {
 			printf("Starting pausing thread failed, exiting...\n");
 			status_LED(3);
 			return 1;
@@ -292,7 +306,7 @@ int main() {
 			printf("Starting playing thread failed, exiting...\n");
 			status_LED(3);
 			return 1;
-		}
+		}*/
 		if (pthread_join(t_control, NULL) != 0) {
 			printf("Starting control thread failed, exiting...\n");
 			status_LED(3);
