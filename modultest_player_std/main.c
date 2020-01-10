@@ -12,13 +12,15 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <signal.h>
+#include <mcp3004.h>
+
+
 #include "flanken.h"
 #include "popen.h"
 #include "volumen.h"
 #include "handling.h"
-#include "delay.h"
 #include "status_display.h"
-#include <mcp3004.h>
+
 
 //Pinbelegung der Tasten
 #define PLAY 17
@@ -34,12 +36,11 @@
 #define SPI_CHAN 0
 
 //globale Variablen
-pthread_t t_control, t_monitor; //pthread-Bezeichner aller auszuführenden Threads
+pthread_t t_control, t_monitor; //pthread-Bezeichner aller auszufuehrenden Threads
 int song_index = 0; //Index der Playliste
-//int play = 0; // Variable, ob die Playtaste gedrückt wird, also ob die Musik gespielt wurde
 int fresh_start = 1; // Variable, ob es sich um den frischen Start handelt
 char *path = "//home//pi//music//"; //vorgegebener Pfad zur Speicherung der Musikdateien
-int infp, outfp; // Bezeichner für die Stdin und Stdout des durch Pipe gestarteten Prozesses
+int infp, outfp; // Bezeichner fuer die Stdin und Stdout des durch Pipe gestarteten Prozesses
 char cmd[128]; // Die an stdin zu sendenden Befehle
 char output[128]; // Stdout der MPG321
 char *playlist[32768] = { 0 }; // Char-Array zur Speicherung der Playliste, maximal 32768 Elemente erlaubt, maximaler Index bis 32767
@@ -50,10 +51,10 @@ void cleanup();
 void siginthandler(int sig_num); // Signalhandler beim Beenden, mpg321 zu beenden
 void status_LED(int status_code);
 
-int size_playlist() { // Mit dieser Funktion wird die eigentliche Länge der Playliste bestimmt. Bei Erstellen der Array-Liste werden alle Elemente mit 0 gefüllt.
+int size_playlist() { // Mit dieser Funktion wird die eigentliche Laenge der Playliste bestimmt. Bei Erstellen der Array-Liste werden alle Elemente mit 0 gefuellt.
 	int length = 0;
 	for (int i = 0; i < 32768; i++) {
-		if (playlist[i] != 0) { // Alle 0 werden nicht gezählt
+		if (playlist[i] != 0) { // Alle 0 werden nicht gezaehlt
 			length++;
 		}
 	}
@@ -71,9 +72,9 @@ int read_dir() { // Verzeichnis wird gelesen
 	{
 		while ((dir = readdir(d)) != NULL)
 		{
-			if (dir->d_type == 8) { //8 für Dateien, nicht für Ordner
+			if (dir->d_type == 8) { //8 fuer Dateien, nicht fuer Ordner
 				if (strstr(dir->d_name, "mp3")) {
-					playlist[ind] = dir->d_name; // Die Playliste werden mit den Dateinamen (ausschliesslich mp3) gefüllt.
+					playlist[ind] = dir->d_name; // Die Playliste werden mit den Dateinamen (ausschliesslich mp3) gefuellt.
 					ind++;
 				}
 
@@ -81,7 +82,6 @@ int read_dir() { // Verzeichnis wird gelesen
 
 		}
 		closedir(d); 
-		//return 0;
 	}
 	else {
 		return 1; // Sollte das Verzeichnis nicht so zugegriffen werden, danach wird ein Fehlercode ausgegeben.
@@ -97,13 +97,14 @@ int read_dir() { // Verzeichnis wird gelesen
 }
 
 void generate_command() { // Der Play-Befehl wird generiert mit dem aktuellen Index.
+	memset(cmd, 0, sizeof(cmd));
 	strcpy(cmd, "LOAD ");
 	strcat(cmd, path);
 	strcat(cmd, playlist[song_index]);
 	strcat(cmd, "\n");
 }
 
-void *monitoring() { //Überwacht, ob das Spielen vom aktuellen Lied beendet ist.
+void *monitoring() { //Ueberwacht, ob das Spielen vom aktuellen Lied beendet ist. -> 1ms Zyklus
 	while (1) {
 		if (read(outfp, output, 128)) {
 			if (strstr(output, "@P 3")) //Nach dem Ende der Wiedergabe wird dieser String ausgegeben.
@@ -116,11 +117,11 @@ void *monitoring() { //Überwacht, ob das Spielen vom aktuellen Lied beendet ist.
 					song_index = 0; //Reset nach dem Abspielen
 				}
 				generate_command();
-				if (write(infp, cmd, 128) == -1) {
+				if (write(infp, cmd, strlen(cmd)) == -1) {
 					status_LED(3);
 					exit(EXIT_FAILURE);
 				}
-				//fflush(stdin);
+				
 			}
 		}
 		else {
@@ -132,103 +133,70 @@ void *monitoring() { //Überwacht, ob das Spielen vom aktuellen Lied beendet ist.
 	}
 }
 
-/*void *play_music() { // Beim Betätigen der Play-Taste und wenn das Programm frisch ausgeführt wird, wird das erste Lied gespielt
-	while (1) {
-		if (play == 1 && fresh_start == 0) {
-			fresh_start = 1;
-			generate_command();
-			if (write(infp, cmd, 128) == -1) {
-				status_LED(3);
-				exit(EXIT_FAILURE);
-			}
-			
-		}
-
-	}
-	return 0;
-} 
-
-void *stop_music(){ // Beim Bestätigen der Play-Taste und wenn bereit eine Musik spielt, wird das Wiedergeben pausiert.
-	while (1) {
-		if (play == 0 && fresh_start != 0) {
-			
-			if (write(infp, "PAUSE\n", 128) == -1) { //Wenn die Wiedergabe pausiert ist, wird durch Eingabe von "PAUSE" die Wiedergabe fortgesetzt
-				status_LED(3);
-				exit(EXIT_FAILURE);
-			}
-
-		}
-	}
-	return 0;
-}*/
 
 
-void *control() { //Dieser Thread liest alle Tasten und Potis über GPIO-Eingängen. Gleichzeitiges Druecken von Tasten wird ausgeschlossen.
+
+void *control() { //Dieser Thread liest alle Tasten und Potis ueber GPIO-Eingaengen. Gleichzeitiges Druecken von Tasten wird ausgeschlossen.
+	//500ms-Zyklus
 	int analog_input;
 	while (1) {
-		if ((flank_high(PLAY) == HIGH) && !(flank_high(VOR)) && !(flank_high(RUECK))) { // Bei Betätigung der Play-Taste wird der Zustand zum Spielen bzw. Pausieren gewechselt.
-			/*if (play == 0) {
-				play++; //Merkvariable, ob Wiedergabe gestartet wird.
-				delay_no_itr(500);
-			}
-			else {
-				play--;
-				delay_no_itr(500);
-			}*/
+		if ((flank_high(PLAY) == HIGH) && !(flank_high(VOR)) && !(flank_high(RUECK))) { // Bei Betaetigung der Play-Taste wird der Zustand zum Spielen bzw. Pausieren gewechselt.
+
 			if (fresh_start == 0) {
-				if (write(infp, "PAUSE\n", 128) == -1) { //Wenn die Wiedergabe pausiert ist, wird durch Eingabe von "PAUSE" die Wiedergabe fortgesetzt
+				if (write(infp, "PAUSE\n", 7) == -1) { //Wenn die Wiedergabe pausiert ist, wird durch Eingabe von "PAUSE" die Wiedergabe fortgesetzt
 					status_LED(3);
 					exit(EXIT_FAILURE);
 				}
 			}
 			else {
+				fresh_start = 0;
 				generate_command();
-				if (write(infp, cmd, 128) == -1) {
+				if (write(infp, cmd, strlen(cmd)) == -1) {
 					status_LED(3);
 					exit(EXIT_FAILURE);
 				}
 			}
 			
 		}
-		if (flank_high(VOR) == HIGH && fresh_start != 0 && !(flank_high(PLAY)) && !(flank_high(RUECK))) { //Bei Betätigung der VOR-Taste wird der Index der Playliste um 1 inkrementiert, wenn das Ende nicht erreicht wurde.
+		if (flank_high(VOR) == HIGH && fresh_start != 0 && !(flank_high(PLAY)) && !(flank_high(RUECK))) { //Bei Betaetigung der VOR-Taste wird der Index der Playliste um 1 inkrementiert, wenn das Ende nicht erreicht wurde.
 			if (song_index < size_playlist()-1) {
 				song_index++;
-				delay_no_itr(500);
+				
 			}
 			generate_command();
-			if (write(infp, cmd, 128) == -1) {
+			if (write(infp, cmd, strlen(cmd)) == -1) {
 				status_LED(3);
 				exit(EXIT_FAILURE);
 			}
 
 
 		}
-		if (flank_high(RUECK) == HIGH && fresh_start != 0 && !(flank_high(PLAY)) && !(flank_high(VOR))) { //Ebenso für die RÜCK-Taste
+		if (flank_high(RUECK) == HIGH && fresh_start != 0 && !(flank_high(PLAY)) && !(flank_high(VOR))) { //Ebenso fuer die RUeCK-Taste
 			if (song_index > 0) {
 				song_index--; 
-				delay_no_itr(500);
+				
 			}
 			generate_command();
-			if (write(infp, cmd, 128) == 1) {
+			if (write(infp, cmd, strlen(cmd)) == 1) {
 				status_LED(3);
 				exit(EXIT_FAILURE);
 			}
 
 
 		}
-		//Zweistufige Volumenregelung
-		/*analog_input = analogRead(BASE + 2);
+		//dreistufige Volumenregelung
+		analog_input = analogRead(BASE + 2);
 		if (analog_input < 300) {
-			set_volume(8);
+			set_volume(-3251);
 		}
 		else if (analog_input < 450 && analog_input >= 300) {
-			set_volume(10);
+			set_volume(-5213);
 		}
 		else {
-			set_volume(9);
+			set_volume(-7628);
 		}
-		*/
-		//delay_no_itr(100);
+		
+		delay(500);
 	}
 	return 0;
 }
@@ -248,13 +216,13 @@ int main() {
 		return 1;
 	}
 
-	signal(SIGINT, siginthandler); // Deklaration des Signal-Händlers
+	signal(SIGINT, siginthandler); // Deklaration des Signal-Haendlers
 
 	pinMode(PLAY, INPUT); //GPIO-Freigabe
 	pinMode(VOR, INPUT);
 	pinMode(RUECK, INPUT);
 
-	pullUpDnControl(PLAY, PUD_UP); //Freischalten der Pullwiderstände
+	pullUpDnControl(PLAY, PUD_UP); //Freischalten der Pullwiderstaende
 	pullUpDnControl(VOR, PUD_UP);
 	pullUpDnControl(RUECK, PUD_UP);
 
@@ -276,37 +244,19 @@ int main() {
 		}
 		status_LED(1);
 
-		/*if (pthread_create(&t_play, NULL, play_music, NULL) != 0) {
-			printf("Creating playback thread failed, exiting...\n");
-			status_LED(3);
-			return 1;
-		}*/
+
 		if (pthread_create(&t_control, NULL, control, NULL) != 0) {
 			printf("Creating input control thread failed, exiting...\n");
 			status_LED(3);
 			return 1;
 		}
-		/*if (pthread_create(&t_stop, NULL, stop_music, NULL) != 0) {
-			printf("Creating pausing control thread failed, exiting...\n");
-			status_LED(3);
-			return 1;
-		}*/
+
 		if (pthread_create(&t_monitor, NULL, monitoring, NULL) != 0) {
 			printf("Creating monitoring thread failed, exiting...\n");
 			status_LED(3);
 			return 1;
 		}
-		/*if (pthread_join(t_stop, NULL) != 0) {
-			printf("Starting pausing thread failed, exiting...\n");
-			status_LED(3);
-			return 1;
-		}
 
-		if (pthread_join(t_play, NULL) != 0) {
-			printf("Starting playing thread failed, exiting...\n");
-			status_LED(3);
-			return 1;
-		}*/
 		if (pthread_join(t_control, NULL) != 0) {
 			printf("Starting control thread failed, exiting...\n");
 			status_LED(3);

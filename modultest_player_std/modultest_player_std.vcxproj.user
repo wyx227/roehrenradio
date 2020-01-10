@@ -4,6 +4,6 @@
     <RemoteTarget>1357542603;roehrenradio (username=, port=22, authentication=Password)</RemoteTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <RemoteTarget>1357542603;roehrenradio (username=, port=22, authentication=Password)</RemoteTarget>
+    <RemoteTarget>-1947752419;raspberrypi.local (username=, port=22, authentication=Password)</RemoteTarget>
   </PropertyGroup>
 </Project>

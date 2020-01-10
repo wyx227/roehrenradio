@@ -1,3 +1,10 @@
+/*
+Quelle:https://dzone.com/articles/simple-popen2-implementation
+
+Die Funktionsweise der unteren Implementation aehnelt der gleichnamigen Funktion in Python.
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -10,7 +17,7 @@
 #define READ 0
 #define WRITE 1
 
-//Funktion zur Führung der Prozesse
+//Funktion zur Fuehrung der Prozesse
 pid_t popen2(const char *command, int *infp, int *outfp)
 {
 	int p_stdin[2], p_stdout[2];

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <wiringPi.h>
 
-#define POWERON 16 //Green:
+#define POWERON 16 //Gruen:
 #define FILE_ERROR 21 //Blau
 #define FATAL_ERROR 20 //Rot
 

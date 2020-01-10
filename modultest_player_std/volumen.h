@@ -1,4 +1,8 @@
+/*
+Quelle:https://stackoverflow.com/questions/6787318/set-alsa-master-volume-from-c-code
+Am Raspberry Pi Model 3 B angepasst
 
+*/
 #define alloca(x)  __builtin_alloca(x)
 
 #include <alsa/asoundlib.h>
@@ -24,7 +28,7 @@ void set_volume(int volume){ //Default-Einstellung fuer Onboard-Soundkarte
 	snd_mixer_elem_t* elem = snd_mixer_find_selem(handle, sid);
 
 	snd_mixer_selem_get_playback_volume_range(elem, &min, &max);
-	snd_mixer_selem_set_playback_volume_all(elem, volume*800 - 10000); //Hier kann man die Volumen anpassen. Der Poti verhaelt sich sehr seltsam.
+	snd_mixer_selem_set_playback_volume_all(elem, volume); //Hier kann man die Volumen anpassen. Der Poti verhaelt sich sehr seltsam.
 
 	snd_mixer_close(handle);
 }

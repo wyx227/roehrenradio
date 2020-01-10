@@ -78,7 +78,6 @@
     <ClCompile Include="main.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="delay.h" />
     <ClInclude Include="status_display.h" />
     <ClInclude Include="flanken.h" />
     <ClInclude Include="handling.h" />
